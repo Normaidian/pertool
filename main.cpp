@@ -102,7 +102,7 @@ void allRegisterTabel(){
         }
 
         SetConsoleTextAttribute( hOut, 10 );                                                                                //! Creating tab with values from *.p file
-        cout << "Number of values from file *.p: ";
+        cout << "Number of values from file *.p:asdasdasdas ";
         SetConsoleTextAttribute( hOut, 7 );
         cin >> numberOfParams;
 
