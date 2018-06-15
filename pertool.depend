@@ -1,0 +1,37 @@
+# depslib dependency file v1.0
+1529074097 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+	<sstream>
+	<windows.h>
+	<list>
+	"register.h"
+
+1528803781 c:\users\pracownik\documents\github\pertool\pertool\register.h
+	<iostream>
+	<algorithm>
+	<string>
+	"group.h"
+
+1528698145 c:\users\pracownik\documents\github\pertool\pertool\group.h
+	<iostream>
+	<sstream>
+	<algorithm>
+
+1526362119 source:c:\users\pracownik\documents\github\pertool\pertool\group.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+	"group.h"
+
+1528805733 source:c:\users\pracownik\documents\github\pertool\pertool\register.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+	<sstream>
+	"register.h"
+
