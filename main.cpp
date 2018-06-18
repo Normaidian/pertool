@@ -93,7 +93,7 @@ void allRegisterTabel(){
         SetConsoleTextAttribute( hOut, 7 );
         cin >> baseAddress;
 
-        if (atoi(baseAddress.c_str())!=0){
+        if (baseAddress != "0" ){
             for (int i = 2; i < baseAddress.length()-2;i++){                                                                    //! Checking corrections of base address
                 if(!isxdigit(baseAddress[i])){
                     throw(std::logic_error("---Wrong base address!---"));
@@ -102,7 +102,7 @@ void allRegisterTabel(){
         }
 
         SetConsoleTextAttribute( hOut, 10 );                                                                                //! Creating tab with values from *.p file
-        cout << "Number of values from file *.p:asdasdasdas ";
+        cout << "Number of values from file *.p: ";
         SetConsoleTextAttribute( hOut, 7 );
         cin >> numberOfParams;
 
