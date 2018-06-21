@@ -11,8 +11,8 @@ public:
     string range;
     string access;
 
-    int hexToDec(string hexAdd){                                                            //! Convert hex number to decimal number
-        int decAdd;
+    unsigned long hexToDec(string hexAdd){                                                            //! Convert hex number to decimal number
+        unsigned long decAdd;
         std::stringstream ss;
 
         ss << std::hex << hexAdd;
@@ -21,7 +21,7 @@ public:
         return decAdd;
     }
 
-    string decToHex(int decAdd){                                                            //! Convert decimal number to hex number
+    string decToHex(unsigned long decAdd){                                                            //! Convert decimal number to hex number
         string hexAdd;
         std::stringstream ss;
 

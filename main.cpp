@@ -150,7 +150,7 @@ void allRegisterTabel(){
 
             bool *pointer = &r.first_print;
             *pointer = true;
-        }else if(line.find("base ") != string::npos){
+        }else if((line.find("base ") != string::npos)&&(line.find(":0x") != string::npos)){
             baseAddress = line.substr(line.find("base ") + 5, line.size() - line.find("base ") + 5);
         }else if((line.find("%for") != string::npos)){                                                                  //! entry to for condition
                 tempForLine = line;

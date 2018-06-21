@@ -31,6 +31,8 @@ Group Group::searching(string line){
         g.access = "Read/Write (RW)";                                              //! Group access
     }
 
+
+
     if(g.offset.find("+") != string::npos){
 
         g.offset = decToHex(hexToDec(g.offset.substr(0,g.offset.find("+"))) + hexToDec(g.offset.substr(g.offset.find("+")+1,g.offset.size())));
