@@ -181,7 +181,7 @@ void Register::forOperations(string line, string tempForLine, string tempGroupLi
 
             if(insideList == true){
                 if(j+1 == iterations){
-                    tabValues[i][j-1] = params.substr(0,params.find(','));                    tabValues[i][j] = params.substr(params.find(',')+1,params.size());
+                    tabValues[i][j-1] = params.substr(0,params.find(','));                    tabValues[i][j] = params.substr(params.find(',')+1,params.find('")')-params.find(',')-2);
                 }else{
                     tabValues[i][j-1] = params.substr(0,params.find(','));
                 }
