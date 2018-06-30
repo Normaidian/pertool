@@ -11,11 +11,11 @@ using namespace std;
 
 fstream file;
 int width, numberOfParams = 0;
-string fileAddress, baseAddress, tempForLine, tempGroupLine, coreAddress = "none", hexOrDec = "dec";
+string line, fileAddress, baseAddress, tempForLine, tempGroupLine, coreAddress = "none", hexOrDec = "dec";
 
-void allRegisterTabel();
-string decToHex(string decAdd);
-int hexToDec(string hexAdd);
+void registerTabel();
+void moduleTabel();
+
 HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 Register r;
 Group g;
@@ -31,7 +31,9 @@ int main(){
             cout << " ____________________________________"<< endl;
             cout << "|               MENU                 |" << endl;
             cout << "|____________________________________|" << endl;
-            cout << "|    1 - Get table with registers    |" << endl;
+            cout << "|    1 - Get table with modules      |" << endl;
+            cout << "|____________________________________|" << endl;
+            cout << "|    2 - Get table with registers    |" << endl;
             cout << "|____________________________________|" << endl;
             cout << "|    0 - Exit                        |" << endl;
             cout << "|____________________________________|" << endl;
@@ -41,7 +43,10 @@ int main(){
                 switch(choice){
 
                     case 1:
-                        allRegisterTabel();
+                        moduleTabel();
+                    break;
+                    case 2:
+                        registerTabel();
                     break;
                     case 0:
                         exit(0);
@@ -60,10 +65,8 @@ int main(){
 return 0;
 }
 
-void allRegisterTabel(){
+void registerTabel(){
     //! Variables declaration
-    fstream file;
-    string line;
     bool insideIf = false, insideIfElse = false, insideFor = false;
 
     do{                                                                                                                 //! Checking corrections of file address
@@ -72,11 +75,11 @@ void allRegisterTabel(){
         SetConsoleTextAttribute( hOut, 7);
         cin >> fileAddress;
 
-        file.open(fileAddress.c_str(), ios::in);
-
         if(!file.good()){
             throw(std::logic_error("---Wrong file address!---"));
         }
+
+        file.open(fileAddress.c_str(), ios::in);
 
         if(fileAddress.find("spr.") != string::npos){
             coreAddress = "spr";
@@ -183,4 +186,29 @@ void allRegisterTabel(){
     file.close();
     system("pause");
     main();
+}
+
+void moduleTabel(){
+
+    SetConsoleTextAttribute( hOut, 10 );
+    cout << endl << "File address: ";
+    SetConsoleTextAttribute( hOut, 7);
+    cin >> fileAddress;
+
+    file.open(fileAddress.c_str(), ios::in);
+
+    if((!file.good())&&(fileAddress.substr(fileAddress.length()-2,fileAddress.length()) != ".p")){
+        throw(std::logic_error("---Wrong file address!---"));
+    }
+
+    system("cls");
+
+
+    while(getline(file,line)){
+        if((line.find("tree") != string::npos)&&(line.find("tree.end") == string::npos))
+            cout << line << endl;
+    }
+
+    file.close();
+    system("pause");
 }
