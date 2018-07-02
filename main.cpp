@@ -203,6 +203,7 @@ void moduleTabel(){
         throw(std::logic_error("---Wrong file address!---"));
     }
 
+    int id = 0;
     string name, tmpName, base, memoryClass, address ;
     bool insideTree = false;
 
@@ -210,8 +211,8 @@ void moduleTabel(){
 
     while(getline(file,line)){
 
-        if(((line.find("tree.end") != string::npos))&&(name != "")){
-            Module module(name, base, address, memoryClass);
+        if(line.find("tree.end") != string::npos){
+            Module module(id, name, base, address, memoryClass);
             cout <<  "id:          " << module.id
             <<endl<< "name:        " << module.name
             <<endl<< "baseAddress: " << module.baseaddress
@@ -219,6 +220,7 @@ void moduleTabel(){
             <<endl<< "memoryClass: " << module.memoryClass
             <<endl<< "________________________________________"<<endl;
             name = "";
+            id++;
             insideTree = false;
         }else if(line.find("tree") != string::npos){
             line = line.substr(line.find(' "') + 1,line.size());
