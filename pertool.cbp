@@ -35,6 +35,8 @@
 		<Unit filename="group.cpp" />
 		<Unit filename="group.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="module.cpp" />
+		<Unit filename="module.h" />
 		<Unit filename="register.cpp" />
 		<Unit filename="register.h" />
 		<Extensions>

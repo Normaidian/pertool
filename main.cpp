@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <list>
 #include "register.h"
+#include "module.h"
 
 using namespace std;
 
@@ -190,6 +191,7 @@ void registerTabel(){
 
 void moduleTabel(){
 
+
     SetConsoleTextAttribute( hOut, 10 );
     cout << endl << "File address: ";
     SetConsoleTextAttribute( hOut, 7);
@@ -201,12 +203,40 @@ void moduleTabel(){
         throw(std::logic_error("---Wrong file address!---"));
     }
 
+    string name, tmpName, base, memoryClass, address ;
+    bool insideTree = false;
+
     system("cls");
 
-
     while(getline(file,line)){
-        if((line.find("tree") != string::npos)&&(line.find("tree.end") == string::npos))
-            cout << line << endl;
+
+        if(((line.find("tree.end") != string::npos))&&(name != "")){
+            Module module(name, base, address, memoryClass);
+            cout <<  "id:          " << module.id
+            <<endl<< "name:        " << module.name
+            <<endl<< "baseAddress: " << module.baseaddress
+            <<endl<< "fileAddress: " << module.fileaddress
+            <<endl<< "memoryClass: " << module.memoryClass
+            <<endl<< "________________________________________"<<endl;
+            name = "";
+            insideTree = false;
+        }else if(line.find("tree") != string::npos){
+            line = line.substr(line.find(' "') + 1,line.size());
+
+            if(insideTree == false){
+                name = line.substr(0,line.find('"'));
+                tmpName = line.substr(0,line.find('"'));
+            }else{
+                name = tmpName + " - " + line.substr(0,line.find('"'));
+            }
+
+            insideTree = true;
+        }else if(line.find("base ") != string::npos){
+            base = line.substr(line.find(":") + 1,line.length());
+            memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
+        }else if(line.find("%include ") != string::npos){
+            address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+        }
     }
 
     file.close();
