@@ -2,7 +2,6 @@
 #include <fstream>
 #include <cstdlib>
 #include <string>
-#include <sstream>
 #include <windows.h>
 #include <list>
 #include "register.h"
@@ -76,11 +75,12 @@ void registerTabel(){
         SetConsoleTextAttribute( hOut, 7);
         cin >> fileAddress;
 
+        file.open(fileAddress.c_str(), ios::in);
+
         if(!file.good()){
             throw(std::logic_error("---Wrong file address!---"));
         }
 
-        file.open(fileAddress.c_str(), ios::in);
 
         if(fileAddress.find("spr.") != string::npos){
             coreAddress = "spr";
@@ -90,6 +90,7 @@ void registerTabel(){
             coreAddress = "none";
         }
     }while(!file.good());
+
 
     if(coreAddress == "none"){
         SetConsoleTextAttribute( hOut, 10 );
@@ -203,41 +204,69 @@ void moduleTabel(){
         throw(std::logic_error("---Wrong file address!---"));
     }
 
-    int id = 0;
-    string name, tmpName, base, memoryClass, address ;
-    bool insideTree = false;
+    int id = 0, counter = 0,maxCounter = 0;
+    string name, tmpName, base, memoryClass, address;
+    list <string> parameters;
 
     system("cls");
 
     while(getline(file,line)){
 
-        if(line.find("tree.end") != string::npos){
-            Module module(id, name, base, address, memoryClass);
+        if((line.find("tree.end") != string::npos)&&(counter == maxCounter)){
+            Module module(id, name, base, address, memoryClass, parameters);
             cout <<  "id:          " << module.id
             <<endl<< "name:        " << module.name
             <<endl<< "baseAddress: " << module.baseaddress
             <<endl<< "fileAddress: " << module.fileaddress
             <<endl<< "memoryClass: " << module.memoryClass
             <<endl<< "________________________________________"<<endl;
-            name = "";
             id++;
-            insideTree = false;
+            --counter;
+            parameters.clear();
+            name = name.erase(name.find(tmpName),tmpName.size());
+        }else if((line.find("tree.end") != string::npos)&&(counter != maxCounter)){
+            --counter;
         }else if(line.find("tree") != string::npos){
             line = line.substr(line.find(' "') + 1,line.size());
 
-            if(insideTree == false){
+            if (counter > 0){
+                name = name + " - " + line.substr(0,line.find('"'));
+                tmpName = " - " + line.substr(0,line.find('"'));
+            }else{
                 name = line.substr(0,line.find('"'));
                 tmpName = line.substr(0,line.find('"'));
-            }else{
-                name = tmpName + " - " + line.substr(0,line.find('"'));
             }
-
-            insideTree = true;
+            ++counter;
         }else if(line.find("base ") != string::npos){
             base = line.substr(line.find(":") + 1,line.length());
             memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
         }else if(line.find("%include ") != string::npos){
             address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+
+            if(line.find(".ph ") != string::npos)
+                line = line.substr(line.find(".ph") + 4, line.size());
+
+            while(!line.empty()){
+                string param = line.substr(0,line.find(" "));
+                parameters.push_back(param);
+                line = line.erase(0,line.find(param)+param.size()+1);
+                cout << line.size() << "| |" << param << endl;
+            }
+
+            cout << endl;
+            for(list<string>::iterator i = parameters.begin(); i!=parameters.end();++i){
+                cout << *i << endl;
+            }
+            cout << endl;
+        }
+
+        if (counter > maxCounter){
+            maxCounter = counter;
+        }
+
+        if((line.find("tree.end") != string::npos)&&(counter == 0)){
+            maxCounter = 0;
+            name = "";
         }
     }
 
