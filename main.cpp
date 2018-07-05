@@ -192,7 +192,6 @@ void registerTabel(){
 
 void moduleTabel(){
 
-
     SetConsoleTextAttribute( hOut, 10 );
     cout << endl << "File address: ";
     SetConsoleTextAttribute( hOut, 7);
@@ -204,23 +203,19 @@ void moduleTabel(){
         throw(std::logic_error("---Wrong file address!---"));
     }
 
-    int id = 0, counter = 0,maxCounter = 0;
+    int counter = 0,maxCounter = 0;
     string name, tmpName, base, memoryClass, address;
     list <string> parameters;
+    list <Module> modules;
 
     system("cls");
 
     while(getline(file,line)){
 
         if((line.find("tree.end") != string::npos)&&(counter == maxCounter)){
-            Module module(id, name, base, address, memoryClass, parameters);
-            cout <<  "id:          " << module.id
-            <<endl<< "name:        " << module.name
-            <<endl<< "baseAddress: " << module.baseaddress
-            <<endl<< "fileAddress: " << module.fileaddress
-            <<endl<< "memoryClass: " << module.memoryClass
-            <<endl<< "________________________________________"<<endl;
-            id++;
+            Module module(name, base, address, memoryClass, parameters);
+
+            modules.push_back(module);
             --counter;
             parameters.clear();
             name = name.erase(name.find(tmpName),tmpName.size());
@@ -243,21 +238,16 @@ void moduleTabel(){
         }else if(line.find("%include ") != string::npos){
             address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
 
-            if(line.find(".ph ") != string::npos)
+            if(line.find(".ph ") != string::npos){
                 line = line.substr(line.find(".ph") + 4, line.size());
+                line = line + " ";
 
-            while(!line.empty()){
-                string param = line.substr(0,line.find(" "));
-                parameters.push_back(param);
-                line = line.erase(0,line.find(param)+param.size()+1);
-                cout << line.size() << "| |" << param << endl;
+                while(!line.empty()){
+                    string param = line.substr(0,line.find(" "));
+                    parameters.push_back(param);
+                    line = line.erase(0,line.find(param)+param.size()+1);
+                }
             }
-
-            cout << endl;
-            for(list<string>::iterator i = parameters.begin(); i!=parameters.end();++i){
-                cout << *i << endl;
-            }
-            cout << endl;
         }
 
         if (counter > maxCounter){
@@ -271,5 +261,6 @@ void moduleTabel(){
     }
 
     file.close();
+    Module::print(modules);
     system("pause");
 }
