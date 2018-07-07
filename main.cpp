@@ -207,31 +207,39 @@ void moduleTabel(){
     string name, tmpName, base, memoryClass, address;
     list <string> parameters;
     list <Module> modules;
+    list <string> trees;
 
     system("cls");
 
     while(getline(file,line)){
-
         if((line.find("tree.end") != string::npos)&&(counter == maxCounter)){
-            Module module(name, base, address, memoryClass, parameters);
+
+            string fullName;
+
+            for(list<string>::iterator i = trees.begin(); i != trees.end(); ++i){
+                fullName = fullName + *i + " - ";
+            }
+            fullName.erase(fullName.length()-3,fullName.length());
+
+            Module module(fullName, base, address, memoryClass, parameters);
 
             modules.push_back(module);
-            --counter;
+            trees.pop_back();
             parameters.clear();
-            name = name.erase(name.find(tmpName),tmpName.size());
-        }else if((line.find("tree.end") != string::npos)&&(counter != maxCounter)){
             --counter;
+        }else if((line.find("tree.end") != string::npos)){
+            --counter;
+            trees.pop_back();
+            if (counter < 1)
+                maxCounter = 0;
+
         }else if(line.find("tree") != string::npos){
             line = line.substr(line.find(' "') + 1,line.size());
-
-            if (counter > 0){
-                name = name + " - " + line.substr(0,line.find('"'));
-                tmpName = " - " + line.substr(0,line.find('"'));
-            }else{
-                name = line.substr(0,line.find('"'));
-                tmpName = line.substr(0,line.find('"'));
-            }
             ++counter;
+            if (counter > maxCounter)
+                maxCounter = counter;
+
+            trees.push_back(line.substr(0,line.find('"')));
         }else if(line.find("base ") != string::npos){
             base = line.substr(line.find(":") + 1,line.length());
             memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
@@ -248,15 +256,6 @@ void moduleTabel(){
                     line = line.erase(0,line.find(param)+param.size()+1);
                 }
             }
-        }
-
-        if (counter > maxCounter){
-            maxCounter = counter;
-        }
-
-        if((line.find("tree.end") != string::npos)&&(counter == 0)){
-            maxCounter = 0;
-            name = "";
         }
     }
 

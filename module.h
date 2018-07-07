@@ -7,6 +7,7 @@ using namespace std;
 class Module{
 
     public:
+
         int id;
         string name;
         string baseaddress;
@@ -26,14 +27,36 @@ class Module{
 
     int makeID();
     static void print(list<Module> moduleList){
-        cout << " __________________________________________________________________________________"  << endl;
-        cout << "| ID |      Module name                |    Base address            | Memory Class |"  << endl;
-        cout << "|____|_________________________________|____________________________|______________|"  << endl;
+
+        int length = 0;
 
         for(list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
             Module m = *i;
-            cout << "| " << m.id << " |  " << m.name << "  |  " << m.baseaddress << "  |  " << m.memoryclass << "  |" << endl;
-            cout << "|____|_________________________________|____________________________|______________|"  << endl;
+            if (m.name.length() > length){
+                length = m.name.length();
+            }
+        }
+
+        string floor = "_____", space = "     ";
+
+        for (int i = 0; i < length; i++){
+            floor = floor + "_";
+            space = space + " ";
+        }
+
+        cout << " _____" << floor << "____________________________________________"  << endl;
+        cout << "| ID |      Module name" << space.substr(0,length - 12) << "|    Base address            | Memory Class |"  << endl;
+        cout << "|____|" << floor << "|____________________________|______________|"  << endl;
+
+        for(list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
+            Module m = *i;
+            if (std::to_string(m.id).size() < 2){
+                cout << "| " << m.id << "  |   " << m.name << space.substr(0, length - m.name.length()) << "  |  " << m.baseaddress << "  |  " << m.memoryclass << "  |" << endl;
+                cout << "|____|" << floor << "|____________________________|______________|"  << endl;
+            }else{
+                cout << "| " << m.id << " |   " << m.name << space.substr(0, length - m.name.length()) << "  |  " << m.baseaddress << "  |  " << m.memoryclass << "  |" << endl;
+                cout << "|____|" << floor << "|____________________________|______________|"  << endl;
+            }
         }
     }
 };

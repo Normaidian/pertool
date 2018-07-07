@@ -42,3 +42,48 @@
 1530539962 source:c:\users\pracownik\documents\github\pertool\pertool\module.cpp
 	"module.h"
 
+1530721994 source:e:\c++\pertool\group.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+	"group.h"
+
+1530721994 e:\c++\pertool\group.h
+	<iostream>
+	<sstream>
+	<algorithm>
+
+1530985169 source:e:\c++\pertool\main.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+	<windows.h>
+	<list>
+	"register.h"
+	"module.h"
+
+1530721994 e:\c++\pertool\register.h
+	<iostream>
+	<algorithm>
+	<string>
+	"group.h"
+
+1530984629 e:\c++\pertool\module.h
+	<string>
+	<list>
+
+1530983630 source:e:\c++\pertool\module.cpp
+	"iostream"
+	"module.h"
+
+1530976237 source:e:\c++\pertool\register.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+	<sstream>
+	<iostream>
+	"register.h"
+
