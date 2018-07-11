@@ -191,6 +191,7 @@ void registerTabel(){
 }
 
 void moduleTabel(){
+    Module::actualId = 0;
 
     SetConsoleTextAttribute( hOut, 10 );
     cout << endl << "File address: ";

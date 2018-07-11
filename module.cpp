@@ -3,12 +3,12 @@
 
 using namespace std;
 
+int Module::actualId = 0;
 
 int Module::makeID(){
-    static int id;
 
-    ++id;
+    ++actualId;
 
-    return id;
+    return actualId;
 }
 

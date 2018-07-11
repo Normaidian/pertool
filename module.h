@@ -7,6 +7,7 @@ using namespace std;
 class Module{
 
     public:
+        static int actualId;
 
         int id;
         string name;
