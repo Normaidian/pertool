@@ -51,16 +51,8 @@ class Module{
 
         for(list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
             Module m = *i;
-            if (std::to_string(m.id).size() == 1){
-                cout << "| " << m.id << "    |   " << m.name << space.substr(0, length - m.name.length()) << "  |      " << m.baseaddress << "     |  " << m.memoryclass << space.substr(0,12 - m.memoryclass.length()) << "|" << endl;
-                cout << "|______|" << floor << "|_____________________|______________|"  << endl;
-            }else if (std::to_string(m.id).size() == 2){
-                cout << "| " << m.id << "   |   " << m.name << space.substr(0, length - m.name.length()) << "  |      " << m.baseaddress << "     |  " << m.memoryclass << space.substr(0,12 - m.memoryclass.length()) <<  "|" << endl;
-                cout << "|______|" << floor << "|_____________________|______________|"  << endl;
-            }else{
-                cout << "| " << m.id << "  |   " << m.name << space.substr(0, length - m.name.length()) << "  |      " << m.baseaddress << "     |  " << m.memoryclass << space.substr(0,12 - m.memoryclass.length()) <<  "|" << endl;
-                cout << "|______|" << floor << "|_____________________|______________|"  << endl;
-            }
+            cout << "| " << m.id << space.substr(0,5 - to_string(m.id).length()) << "|   " << m.name << space.substr(0, length - m.name.length()) << "  |      " << m.baseaddress << "     |  " << m.memoryclass << space.substr(0,12 - m.memoryclass.length()) <<  "|" << endl;
+            cout << "|______|" << floor << "|_____________________|______________|"  << endl;
         }
     }
 };
