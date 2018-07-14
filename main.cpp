@@ -1,6 +1,6 @@
 #include <iostream>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
 #include <string>
 #include <windows.h>
 #include <list>
@@ -17,8 +17,6 @@ void registerTabel();
 void moduleTabel();
 
 HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-Register r;
-Group g;
 
 int main(){
     do{
@@ -66,9 +64,6 @@ return 0;
 }
 
 void registerTabel(){
-    //! Variables declaration
-    bool insideIf = false, insideIfElse = false, insideFor = false;
-
     do{                                                                                                                 //! Checking corrections of file address
         SetConsoleTextAttribute( hOut, 10 );
         cout << endl << "File address: ";
@@ -81,6 +76,7 @@ void registerTabel(){
             throw(std::logic_error("---Wrong file address!---"));
         }
 
+        file.close();
 
         if(fileAddress.find("spr.") != string::npos){
             coreAddress = "spr";
@@ -116,78 +112,22 @@ void registerTabel(){
         numberOfParams = 0;
     }
 
-    string tabParams[numberOfParams];
+    list<string> params;
 
-    for (int i =0; i < numberOfParams; i++){
+    for (int i = 0; i < numberOfParams; i++){
         string value;
         SetConsoleTextAttribute( hOut, 10 );        cout << "Value of " << i+1 << " param: ";
         SetConsoleTextAttribute( hOut, 7 );
         cin >> value;
 
-        tabParams[i] = value;
+        params.push_back(value);
     }
 
     system("cls");
 
-    while(getline(file, line)){
+    Register::searchOperations(fileAddress,baseAddress,params,coreAddress);
 
-        for (int i = 1; i <= numberOfParams; i++){                                                                      //! Replace the parameter number with its value
-            string param = "%(" + r.toString(i) + ")";
-
-            while(line.find(param) != string::npos){
-                line = line.replace(line.find(param),4,tabParams[i-1]);
-            }
-        }
-
-        if((line.find("group.") != string::npos)){                                                                      //! creating Group object
-                tempGroupLine = line;
-                g = g.searching(line);
-        }else if(line.find("width ") != string::npos){                                                                  //! setting values of width
-            if(line.find("0x") != string::npos){
-                if(r.hexToDec(line.substr(line.find("0x")+2,line.size())) > width){
-                    width = r.hexToDec(line.substr(line.find("0x")+2,line.size()));
-                }
-            }else{
-                if(atoi(line.substr(line.find("width ")+6,line.find(".")-line.find("width ")-1).c_str()) > width){
-                    width = atoi(line.substr(line.find("width ")+6,line.find(".")-line.find("width ")-1).c_str());
-                }
-            }
-
-            bool *pointer = &r.first_print;
-            *pointer = true;
-        }else if(line.find("base ") != string::npos){
-            baseAddress = line.substr(line.find("base ") + 5, line.size() - line.find("base ") + 5);
-        }else if((line.find("%for") != string::npos)){                                                                  //! entry to for condition
-                tempForLine = line;
-                insideFor = true;
-        }else if((line.find("%endfor") != string::npos)){                                                               //! exit from for condition
-                insideFor = false;
-        }else if(line.find("endif")!= string::npos){                                                                    //! exit to IF condition
-                insideIf = false;
-                insideIfElse = false;
-        }else if((line.find("else") != string::npos)||(line.find("elif")!=string::npos)){                               //! entry to ELSE/ELIF condition
-                insideIfElse = true;
-        }else if((line.find("if ") != string::npos)&&(line.find("bitfld")==string::npos)){                              //! entry to IF condition
-            insideIf = true;
-        }else if(((line.find("line.") != string::npos)||(line.find("hide.")!=string::npos))&&insideIfElse == false){    //! making register object and print it on screen
-            if(insideFor == true){
-                r.forOperations(line, tempForLine, tempGroupLine, width, baseAddress, insideIf, insideFor, coreAddress);
-            }else{
-                r.print(width,r.searching(line,g, baseAddress, insideIf, insideFor), coreAddress);
-            }
-        }
-    }
-
-    SetConsoleTextAttribute( hOut, 14 );
-    cout << endl << "Comments:" << endl;
-    cout << "    1. Registers with 1 stars (*) after name are inside for loop." << endl;
-    cout << "    2. Registers with 2 stars (**) after name are inside if, sif or %if conditions." << endl;
-    cout << "    3. Registers with 3 stars (***) after name are inside for loop and if, sif or %if conditions." << endl << endl;
-    SetConsoleTextAttribute( hOut, 7 );
-
-    file.close();
-    system("pause");
-    main();
+    system("cls");
 }
 
 void moduleTabel(){
@@ -262,5 +202,18 @@ void moduleTabel(){
 
     file.close();
     Module::print(modules);
-    system("pause");
+
+    int choose;
+    SetConsoleTextAttribute( hOut, 10 );
+    cout << endl << "Choose number of module: ";
+    SetConsoleTextAttribute( hOut, 7);    cin >> choose;
+
+    for(list<Module>::iterator i = modules.begin(); i!=modules.end();++i){
+        Module m = *i;
+
+        if(choose == m.id){
+            Register::searchOperations(m.fileaddress, m.baseaddress, m.prameters, "none");
+        }
+
+    }
 }

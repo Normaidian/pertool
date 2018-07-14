@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <windows.h>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -8,51 +9,19 @@
 
 using namespace std;
 
-Register Register::searching(string line, Group g,string baseAddress, bool insideIf, bool insideFor){
-    Register r;
-
-    if(line.find("line.")!=string::npos){
-        line = line.substr(line.find("line."),line.size());
-        r.name = line.substr(line.find('"')+1,line.find(',')-line.find('"')-1);                                                     //! Line name
-        r.access = g.access;                                                                                                        //! Line access
-        r.offset = "0x" + decToHex(hexToDec(line.substr(line.find("0x"),line.find('"')-1-line.find("0x")))+hexToDec(g.offset));     //! Line offset
-        r.address =  "0x" + decToHex(hexToDec(r.offset) + hexToDec(baseAddress));                                                   //! Line address
-        r.range = line.substr(line.find(".")+1,line.find(" ")-line.find("."));                                                      //! Line range
-
-        if (insideIf == true && insideFor == true){
-            r.name = r.name + "***";
-        }else if(insideFor == true){
-            r.name = r.name + "*";
-        }else if (insideIf == true){
-            r.name = r.name + "**";
-        }
-
-    }else if(line.find("hide.")!=string::npos){
-        line = line.substr(line.find("hide."),line.size());
-        r.name = line.substr(line.find('"')+1,line.find(',')-line.find('"')-1);                                                     //! Line name
-        r.access = g.access;                                                                                                        //! Line access
-        r.offset = "0x" + decToHex(hexToDec(line.substr(line.find("0x"),line.find('"')-1-line.find("0x")))+hexToDec(g.offset));     //! Line offset
-        r.address = "0x" + decToHex( hexToDec(r.offset) + hexToDec(baseAddress));                                                   //! Line address
-        r.range = line.substr(line.find(".")+1,line.find(" ")-line.find("."));                                                      //! Line range
-
-        if (insideIf == true){
-            r.name = r.name + "**";
-        }
-    }
-    return r;
-}
+bool Register::first_print = true;
 
 void Register::print(int width, Register r, string coreAddress){
     string str, floor;
 
     //! Created string with blank space and floor equal in length of name column
     if (width > 23){
-        for(int i = 0;i < width+6 ; i++){
+        for(int i = 0;i < width + 8 ; i++){
             str = str + " ";
             floor = floor + "_";
         }
     }else{
-        for(int i = 0;i < 23 ; i++){
+        for(int i = 0;i < 25 ; i++){
             str = str + " ";
             floor = floor + "_";
         }
@@ -142,76 +111,11 @@ void Register::print(int width, Register r, string coreAddress){
         cout << "   " << r.offset[2] << "   " << "|";
         cout << "   " << r.offset[3] << "   " << "|";
         cout << "   " << r.offset[4] << "   " << "|";
-        cout << "   " << r.offset[5] << "   " << "|";                                                                                   //! print Register offset
+        cout << "   " << r.offset[5] << "   " << "|";                                                                           //! print Register offset
         cout << str.substr(0,6) << r.range << str.substr(0,15-r.range.length()-6) << "|" << endl;                               //! print Register range
         cout << "|" << floor << "|________________________|_____________________|_______|_______|_______|_______|_______________|" << endl;
     }
 }
 
-void Register::forOperations(string line, string tempForLine, string tempGroupLine, int width, string baseAddress, bool insideIf, bool insideFor,string coreAddress){
-    int numberOfParam = 0;
-    string tempLine = tempForLine;
 
-    while(!tempLine.empty()){                                                                                                       //! Checking number of parameters
-        if(tempLine.find(")") != string::npos){
-            numberOfParam++;
-            tempLine = tempLine.substr(tempLine.find(")")+1,tempLine.size());
-        }
-    }
-
-    int iterations = atoi(tempForLine.substr(tempForLine.find("(")+1,tempForLine.find(")")-tempForLine.find("(")-1).c_str());
-    tempForLine = tempForLine.substr(tempForLine.find(")")+1,tempForLine.size());
-
-    string tabValues[numberOfParam-1][iterations];
-
-    for(int i = 0; i < numberOfParam-1; i++){                                                                                       //! Creating table with parameters
-        string params = tempForLine.substr(tempForLine.find("(")+1,tempForLine.find(")")-tempForLine.find("(")-1);
-        bool insideList = false;
-
-        if(params.find("list:") != string::npos){
-            insideList = true;
-            params = tempForLine.substr(tempForLine.find(':')+2,tempForLine.size()-tempForLine.find(':')-4);
-        }else{
-            params = tempForLine.substr(tempForLine.find("(")+1,tempForLine.find(")")-tempForLine.find("(")-1);
-        }
-
-        tabValues[i][0] = params.substr(0,params.find(","));
-        string jump = params.substr(params.find(",")+1,params.size());
-
-        for(int j = 1; j < iterations; j++){
-
-            if(insideList == true){
-                if(j+1 == iterations){
-                    tabValues[i][j-1] = params.substr(0,params.find(','));                    tabValues[i][j] = params.substr(params.find(',')+1,params.size());
-                }else{
-                    tabValues[i][j-1] = params.substr(0,params.find(','));
-                }
-                params = params.substr(params.find(",")+1,params.size());
-            }else if(params.find("0x") != string::npos){
-                tabValues[i][j] ="0x" + decToHex(hexToDec(tabValues[i][j-1]) + hexToDec(jump));
-            }else{
-                tabValues[i][j] = toString(atoi(tabValues[i][j-1].c_str()) + atoi(jump.c_str()));
-            }
-        }
-
-        tempForLine = tempForLine.substr(tempForLine.find(")")+1,tempForLine.size());
-    }
-
-    for(int j = 0; j < iterations; j++){                                                                                            //! Replace the parameter number with its value
-        string tempLine = line;
-        string tempGroup = tempGroupLine;
-        for(int i = 1; i < numberOfParam; i++){
-            string param = "$" + toString(i);
-            while(tempLine.find(param) != string::npos){
-                tempLine = tempLine.replace(tempLine.find(param),2,tabValues[i-1][j]);
-            }
-            while(tempGroup.find(param) != string::npos){
-                tempGroup = tempGroup.replace(tempGroup.find(param),2,tabValues[i-1][j]);
-            }
-        }
-        Group g;
-        g = g.searching(tempGroup);
-        print(width,searching(tempLine,g,baseAddress,insideIf, insideFor),coreAddress);
-    }
-}
 
