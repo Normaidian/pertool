@@ -46,7 +46,7 @@ public:
         }
     }
 
-    void print(int width,Register r, string coreAddress);                                                                                           //! Printed row in console
+    void print(int width,Register r, string coreAddress);                                                                                            //! Printed row in console
 
     static long hexToDec(string hexAdd){                                                                                                             //! Convert hex number to decimal number
         long decAdd;
@@ -67,7 +67,7 @@ public:
         std::transform(hexAdd.begin(),hexAdd.end(),hexAdd.begin(), ::toupper);
         return hexAdd;
     }
-    static void searchOperations(string fileAddress, string baseAddress, list<string> params, string coreAddress){
+    static void searchOperations(string fileAddress, string baseAddress, list<string> params, string coreAddress){                                  //! Searching registers in *.ph file
         fstream file;
         string line, tempGroupLine, tempForLine;
         bool insideFor, insideIf, insideIfElse;
@@ -76,8 +76,6 @@ public:
         Group g;
 
         file.open(fileAddress.c_str(), ios::in);
-
-        system("cls");
 
         while(getline(file, line)){
             int x = 0;
@@ -91,10 +89,10 @@ public:
                 }
             }
 
-            if((line.find("group.") != string::npos)){                                                                      //! creating Group object
+            if((line.find("group.") != string::npos)){                                                                      //! Creating Group object
                     tempGroupLine = line;
-                     g = g.searching(line);
-            }else if(line.find("width ") != string::npos){                                                                  //! setting values of width
+                    g = g.searching(line);
+            }else if(line.find("width ") != string::npos){                                                                  //! Setting values of width
                 if(line.find("0x") != string::npos){
                     width = Register::hexToDec(line.substr(line.find("0x")+2,line.size()));
                 }else{
@@ -104,19 +102,19 @@ public:
                 first_print = true;
             }else if(line.find("base ") != string::npos){
                 baseAddress = line.substr(line.find("0x"), line.size() - line.find("0x"));
-            }else if((line.find("%for") != string::npos)){                                                                  //! entry to FOR condition
+            }else if((line.find("%for") != string::npos)){                                                                  //! Entry to FOR condition
                     tempForLine = line;
                     insideFor = true;
-            }else if((line.find("%endfor") != string::npos)){                                                               //! exit from FOR condition
+            }else if((line.find("%endfor") != string::npos)){                                                               //! Exit from FOR condition
                     insideFor = false;
-            }else if(line.find("endif")!= string::npos){                                                                    //! exit from IF condition
+            }else if(line.find("endif")!= string::npos){                                                                    //! Exit from IF condition
                     insideIf = false;
                     insideIfElse = false;
-            }else if((line.find("else") != string::npos)||(line.find("elif")!=string::npos)){                               //! entry to ELSE/ELIF condition
+            }else if((line.find("else") != string::npos)||(line.find("elif")!=string::npos)){                               //! Entry to ELSE/ELIF condition
                     insideIfElse = true;
-            }else if((line.find("if ") != string::npos)&&(line.find("bitfld")==string::npos)){                              //! entry to IF condition
+            }else if((line.find("if ") != string::npos)&&(line.find("bitfld")==string::npos)){                              //! Entry to IF condition
                 insideIf = true;
-            }else if(((line.find("line.") != string::npos)||(line.find("hide.")!=string::npos))&&insideIfElse == false){    //! making register object and print it on screen
+            }else if(((line.find("line.") != string::npos)||(line.find("hide.")!=string::npos))&&insideIfElse == false){    //! Making register object and print it on screen
                 if(insideFor == true){
                     forOperations(line, tempForLine, tempGroupLine, width, baseAddress, insideIf, insideFor, coreAddress);
                 }else{
@@ -136,7 +134,7 @@ public:
         file.close();
         system("pause");
     }
-    static void forOperations(string line, string tempForLine, string tempGroupLine, int width, string baseAddress, bool insideIf, bool insideFor,string coreAddress){
+    static void forOperations(string line, string tempForLine, string tempGroupLine, int width, string baseAddress, bool insideIf, bool insideFor,string coreAddress){  //! Making registers from FOR operation
         int numberOfParam = 0;
         string tempLine = tempForLine;
 
@@ -170,7 +168,7 @@ public:
 
                 if(insideList == true){
                     if(j+1 == iterations){
-                        tabValues[i][j-1] = params.substr(0,params.find(','));                        tabValues[i][j] = params.substr(params.find(',')+1,params.size());
+                        tabValues[i][j-1] = params.substr(0,params.find(','));                        tabValues[i][j] = params.substr(params.find(',')+1,params.find('"')-params.find(','));
                     }else{
                         tabValues[i][j-1] = params.substr(0,params.find(','));
                     }

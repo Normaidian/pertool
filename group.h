@@ -32,5 +32,5 @@ public:
         return hexAdd;
     }
 
-    Group searching(string line);       //! Searching group in line from file
+    Group searching(string line);                                                             //! Searching group in line from file
 };

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <windows.h>
+#include <conio.h>
 #include <list>
 #include "register.h"
 #include "module.h"
@@ -26,25 +27,24 @@ int main(){
             width = 0;
             int choice;
 
-            cout << " ____________________________________"<< endl;
-            cout << "|               MENU                 |" << endl;
-            cout << "|____________________________________|" << endl;
-            cout << "|    1 - Get table with modules      |" << endl;
-            cout << "|____________________________________|" << endl;
-            cout << "|    2 - Get table with registers    |" << endl;
-            cout << "|____________________________________|" << endl;
-            cout << "|    0 - Exit                        |" << endl;
-            cout << "|____________________________________|" << endl;
+            cout << " ___________________________________________________"<< endl;
+            cout << "|                       MENU                        |" << endl;
+            cout << "|___________________________________________________|" << endl;
+            cout << "|    1 - Get table with registers (for *.ph file)   |" << endl;
+            cout << "|___________________________________________________|" << endl;
+            cout << "|    2 - Get table with modules   (for *.p file)    |" << endl;
+            cout << "|___________________________________________________|" << endl;
+            cout << "|    0 - Exit                                       |" << endl;
+            cout << "|___________________________________________________|" << endl;
             cout << "Select operation: ";
             cin >> choice;
 
                 switch(choice){
-
                     case 1:
-                        moduleTabel();
+                        registerTabel();
                     break;
                     case 2:
-                        registerTabel();
+                        moduleTabel();
                     break;
                     case 0:
                         exit(0);
@@ -64,9 +64,9 @@ return 0;
 }
 
 void registerTabel(){
-    do{                                                                                                                 //! Checking corrections of file address
+    do{                                                                                                                     //! Checking corrections of file address
         SetConsoleTextAttribute( hOut, 10 );
-        cout << endl << "File address: ";
+        cout << endl << "*.ph file address: ";
         SetConsoleTextAttribute( hOut, 7);
         cin >> fileAddress;
 
@@ -102,7 +102,7 @@ void registerTabel(){
             }
         }
 
-        SetConsoleTextAttribute( hOut, 10 );                                                                                //! Creating tab with values from *.p file
+        SetConsoleTextAttribute( hOut, 10 );                                                                                    //! Creating tab with values from *.p file
         cout << "Number of values from file *.p: ";
         SetConsoleTextAttribute( hOut, 7 );
         cin >> numberOfParams;
@@ -134,7 +134,7 @@ void moduleTabel(){
     Module::actualId = 0;
 
     SetConsoleTextAttribute( hOut, 10 );
-    cout << endl << "File address: ";
+    cout << endl << "*.p file address: ";
     SetConsoleTextAttribute( hOut, 7);
     cin >> fileAddress;
 
@@ -152,68 +152,95 @@ void moduleTabel(){
 
     system("cls");
 
-    while(getline(file,line)){
-        if((line.find("tree.end") != string::npos)&&(counter == maxCounter)){
+    do{
+        while(getline(file,line)){
+            if((line.find("tree.end") != string::npos)&&(counter == maxCounter)){
 
-            string fullName;
+                string fullName;
 
-            for(list<string>::iterator i = trees.begin(); i != trees.end(); ++i){
-                fullName = fullName + *i + " - ";
-            }
-            fullName.erase(fullName.length()-3,fullName.length());
+                for(list<string>::iterator i = trees.begin(); i != trees.end(); ++i){
+                    fullName = fullName + *i + " - ";
+                }
+                fullName.erase(fullName.length()-3,fullName.length());
 
-            Module module(fullName, base, address, memoryClass, parameters);
+                Module module(fullName, base, address, memoryClass, parameters);
 
-            modules.push_back(module);
-            trees.pop_back();
-            parameters.clear();
-            --counter;
-        }else if((line.find("tree.end") != string::npos)){
-            --counter;
-            trees.pop_back();
-            if (counter < 1)
-                maxCounter = 0;
+                modules.push_back(module);
+                trees.pop_back();
+                parameters.clear();
+                --counter;
+            }else if((line.find("tree.end") != string::npos)){
+                --counter;
+                trees.pop_back();
+                if (counter < 1)
+                    maxCounter = 0;
 
-        }else if(line.find("tree") != string::npos){
-            line = line.substr(line.find(' "') + 1,line.size());
-            ++counter;
-            if (counter > maxCounter)
-                maxCounter = counter;
+            }else if(line.find("tree") != string::npos){
+                line = line.substr(line.find(' "') + 1,line.size());
+                ++counter;
+                if (counter > maxCounter)
+                    maxCounter = counter;
 
-            trees.push_back(line.substr(0,line.find('"')));
-        }else if(line.find("base ") != string::npos){
-            base = line.substr(line.find(":") + 1,line.length());
-            memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
-        }else if(line.find("%include ") != string::npos){
-            address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+                trees.push_back(line.substr(0,line.find('"')));
+            }else if(line.find("base ") != string::npos){
+                base = line.substr(line.find(":") + 1,line.length());
+                memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
+            }else if(line.find("%include ") != string::npos){
+                address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
 
-            if(line.find(".ph ") != string::npos){
-                line = line.substr(line.find(".ph") + 4, line.size());
-                line = line + " ";
+                if(line.find(".ph ") != string::npos){
+                    line = line.substr(line.find(".ph") + 4, line.size());
+                    line = line + " ";
 
-                while(!line.empty()){
-                    string param = line.substr(0,line.find(" "));
-                    parameters.push_back(param);
-                    line = line.erase(0,line.find(param)+param.size()+1);
+                    while(!line.empty()){
+                        string param = line.substr(0,line.find(" "));
+                        parameters.push_back(param);
+                        line = line.erase(0,line.find(param)+param.size()+1);
+                    }
                 }
             }
         }
-    }
 
-    file.close();
-    Module::print(modules);
+        file.close();
+        Module::print(modules);
 
-    int choose;
-    SetConsoleTextAttribute( hOut, 10 );
-    cout << endl << "Choose number of module: ";
-    SetConsoleTextAttribute( hOut, 7);    cin >> choose;
+        int choose;
+        SetConsoleTextAttribute( hOut, 10 );
+        cout << endl << "Choose number of module | Select '0' to exit: ";
+        SetConsoleTextAttribute( hOut, 7);
+        cin >> choose;
 
-    for(list<Module>::iterator i = modules.begin(); i!=modules.end();++i){
-        Module m = *i;
+        if(choose == 0)
+            break;
 
-        if(choose == m.id){
-            Register::searchOperations(m.fileaddress, m.baseaddress, m.prameters, "none");
+        system("cls");
+
+        for(list<Module>::iterator i = modules.begin(); i!=modules.end();++i){
+            Module m = *i;
+
+            if(choose == m.id){
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "CHOSEN MODULE: " ;
+                SetConsoleTextAttribute( hOut, 7);
+                cout << m.name << endl;
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "FILE LOCATION: ";
+                SetConsoleTextAttribute( hOut, 7);
+                cout << m.fileaddress << endl;
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "BASE ADDRESS:  ";
+                SetConsoleTextAttribute( hOut, 7);
+                cout << m.baseaddress << endl;
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "PARAMETERS:    ";
+                SetConsoleTextAttribute( hOut, 7);
+
+                for(list<string>::iterator i = m.prameters.begin(); i != m.prameters.end();++i){
+                    cout << *i << " ";
+                }
+                cout << endl << endl;
+                Register::searchOperations(m.fileaddress, m.baseaddress, m.prameters, "none");
+            }
         }
-
-    }
+    }while(true);
 }
