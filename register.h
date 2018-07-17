@@ -102,10 +102,6 @@ public:
                 first_print = true;
             }else if((line.find("base ") != string::npos)&&(line.find("bitfld") == string::npos)&&(line.find("line") == string::npos)&&(line.find("hexmask") == string::npos)&&(line.find("eventfld") == string::npos)&&(line.find("setclrfld") == string::npos)){                                                                   //! Changing value of base address
                 baseAddress = line.substr(line.find("0x"), line.size() - line.find("0x"));
-
-                if(baseAddress.find("${TOPDIR}") != string::npos)
-                    baseAddress.replace(baseAddress.find("${TOPDIR}"),9,topdir);
-
             }else if((line.find("%for") != string::npos)){                                                                  //! Entry to FOR condition
                     tempForLine = line;
                     insideFor = true;
