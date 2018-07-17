@@ -12,7 +12,7 @@ using namespace std;
 
 fstream file;
 int width, numberOfParams = 0;
-string line, fileAddress, baseAddress, tempForLine, tempGroupLine, coreAddress = "none", hexOrDec = "dec";
+string line, fileAddress, baseAddress, tempForLine, tempGroupLine, coreAddress = "none", hexOrDec = "dec", topdir;
 
 void registerTabel();
 void moduleTabel();
@@ -78,6 +78,8 @@ void registerTabel(){
 
         file.close();
 
+        topdir = fileAddress.substr(0,10);
+
         if(fileAddress.find("spr.") != string::npos){
             coreAddress = "spr";
         }else if((fileAddress.find("cp14.") != string::npos)||(fileAddress.find("cp15.") != string::npos)){
@@ -125,7 +127,7 @@ void registerTabel(){
 
     system("cls");
 
-    Register::searchOperations(fileAddress,baseAddress,params,coreAddress);
+    Register::searchOperations(fileAddress,baseAddress,params,coreAddress,topdir);
 
     system("cls");
 }
@@ -143,6 +145,8 @@ void moduleTabel(){
     if((!file.good())&&(fileAddress.substr(fileAddress.length()-2,fileAddress.length()) != ".p")){
         throw(std::logic_error("---Wrong file address!---"));
     }
+
+    topdir = fileAddress.substr(0,10);
 
     int counter = 0,maxCounter = 0;
     string name, tmpName, base, memoryClass, address;
@@ -186,7 +190,13 @@ void moduleTabel(){
                 base = line.substr(line.find(":") + 1,line.length());
                 memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
             }else if(line.find("%include ") != string::npos){
-                address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+
+                if(line.find("${TOPDIR}") != string::npos){
+                    address = line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+                    address.replace(address.find("${TOPDIR}"),9,topdir);
+                }else{
+                    address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+                }
 
                 if(line.find(".ph ") != string::npos){
                     line = line.substr(line.find(".ph") + 4, line.size());
@@ -202,6 +212,8 @@ void moduleTabel(){
         }
 
         file.close();
+        system("cls");
+
         Module::print(modules);
 
         int choose;
@@ -239,7 +251,7 @@ void moduleTabel(){
                     cout << *i << " ";
                 }
                 cout << endl << endl;
-                Register::searchOperations(m.fileaddress, m.baseaddress, m.prameters, "none");
+                Register::searchOperations(m.fileaddress, m.baseaddress, m.prameters, "none",topdir);
             }
         }
     }while(true);

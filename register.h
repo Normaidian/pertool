@@ -67,10 +67,10 @@ public:
         std::transform(hexAdd.begin(),hexAdd.end(),hexAdd.begin(), ::toupper);
         return hexAdd;
     }
-    static void searchOperations(string fileAddress, string baseAddress, list<string> params, string coreAddress){                                  //! Searching registers in *.ph file
+    static void searchOperations(string fileAddress, string baseAddress, list<string> params, string coreAddress, string topdir){                                  //! Searching registers in *.ph file
         fstream file;
         string line, tempGroupLine, tempForLine;
-        bool insideFor, insideIf, insideIfElse;
+        bool insideFor, insideIf = false, insideIfElse;
         int width = 23;
         HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
         Group g;
@@ -100,8 +100,12 @@ public:
                 }
 
                 first_print = true;
-            }else if(line.find("base ") != string::npos){
+            }else if((line.find("base ") != string::npos)&&(line.find("bitfld") == string::npos)&&(line.find("line") == string::npos)&&(line.find("hexmask") == string::npos)&&(line.find("eventfld") == string::npos)&&(line.find("setclrfld") == string::npos)){                                                                   //! Changing value of base address
                 baseAddress = line.substr(line.find("0x"), line.size() - line.find("0x"));
+
+                if(baseAddress.find("${TOPDIR}") != string::npos)
+                    baseAddress.replace(baseAddress.find("${TOPDIR}"),9,topdir);
+
             }else if((line.find("%for") != string::npos)){                                                                  //! Entry to FOR condition
                     tempForLine = line;
                     insideFor = true;
@@ -112,7 +116,7 @@ public:
                     insideIfElse = false;
             }else if((line.find("else") != string::npos)||(line.find("elif")!=string::npos)){                               //! Entry to ELSE/ELIF condition
                     insideIfElse = true;
-            }else if((line.find("if ") != string::npos)&&(line.find("bitfld")==string::npos)){                              //! Entry to IF condition
+            }else if((line.find("if ") != string::npos)&&(line.find("bitfld") == string::npos)&&(line.find("line") == string::npos)&&(line.find("hexmask") == string::npos)&&(line.find("eventfld") == string::npos)&&(line.find("setclrfld") == string::npos)){                              //! Entry to IF condition
                 insideIf = true;
             }else if(((line.find("line.") != string::npos)||(line.find("hide.")!=string::npos))&&insideIfElse == false){    //! Making register object and print it on screen
                 if(insideFor == true){
