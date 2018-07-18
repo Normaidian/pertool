@@ -29,7 +29,7 @@ class Module{
         int makeID();
         static void print(list<Module> moduleList){
 
-            int length = 0;
+            int unsigned length = 0;
 
             for(list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
                 Module m = *i;
@@ -40,7 +40,7 @@ class Module{
 
             string floor = "_____", space = "     ";
 
-            for (int i = 0; i < length; i++){
+            for (int unsigned i = 0; i < length; i++){
                 floor = floor + "_";
                 space = space + " ";
             }

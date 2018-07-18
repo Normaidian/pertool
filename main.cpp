@@ -39,6 +39,10 @@ int main(){
             cout << "Select operation: ";
             cin >> choice;
 
+            if( !cin ){
+                throw(std::logic_error("---Wrong choice!---"));
+            }
+            else{
                 switch(choice){
                     case 1:
                         registerTabel();
@@ -52,11 +56,14 @@ int main(){
                     default:
                         throw(std::logic_error("---Wrong choice!---"));
                     break;
+                }
             }
         }catch(std::logic_error &e){
             SetConsoleTextAttribute( hOut, 12 );
             cout << e.what() << endl;
             SetConsoleTextAttribute( hOut, 7 );
+            cin.clear();
+            cin.sync();
             system("pause");
         }
     }while(true);
@@ -64,31 +71,28 @@ return 0;
 }
 
 void registerTabel(){
-    do{                                                                                                                     //! Checking corrections of file address
-        SetConsoleTextAttribute( hOut, 10 );
-        cout << endl << "*.ph file address: ";
-        SetConsoleTextAttribute( hOut, 7);
-        cin >> fileAddress;
+    SetConsoleTextAttribute( hOut, 10 );
+    cout << endl << "*.ph file address: ";
+    SetConsoleTextAttribute( hOut, 7);
+    cin >> fileAddress;
 
-        file.open(fileAddress.c_str(), ios::in);
+    file.open(fileAddress.c_str(), ios::in);
 
-        if(!file.good()){
-            throw(std::logic_error("---Wrong file address!---"));
-        }
+    if(!file.good()){
+        throw(std::logic_error("---Wrong file address!---"));
+    }
 
-        file.close();
+    file.close();
 
-        topdir = fileAddress.substr(0,10);
+    topdir = fileAddress.substr(0,10);
 
-        if(fileAddress.find("spr.") != string::npos){
-            coreAddress = "spr";
-        }else if((fileAddress.find("cp14.") != string::npos)||(fileAddress.find("cp15.") != string::npos)){
-            coreAddress = "cp14/15";
-        }else{
-            coreAddress = "none";
-        }
-    }while(!file.good());
-
+    if(fileAddress.find("spr.") != string::npos){
+        coreAddress = "spr";
+    }else if((fileAddress.find("cp14.") != string::npos)||(fileAddress.find("cp15.") != string::npos)){
+        coreAddress = "cp14/15";
+    }else{
+        coreAddress = "none";
+    }
 
     if(coreAddress == "none"){
         SetConsoleTextAttribute( hOut, 10 );
@@ -97,7 +101,7 @@ void registerTabel(){
         cin >> baseAddress;
 
         if (baseAddress != "0" ){
-            for (int i = 2; i < baseAddress.length()-2;i++){                                                                    //! Checking corrections of base address
+            for (int unsigned i = 2; i < baseAddress.length()-2;i++){                                                                    //! Checking corrections of base address
                 if(!isxdigit(baseAddress[i])){
                     throw(std::logic_error("---Wrong base address!---"));
                 }
@@ -148,17 +152,17 @@ void moduleTabel(){
 
     topdir = fileAddress.substr(0,10);
 
-    int counter = 0,maxCounter = 0;
     string name, tmpName, base, memoryClass, address;
     list <string> parameters;
     list <Module> modules;
     list <string> trees;
+    bool isModule = false;
 
     system("cls");
 
     do{
         while(getline(file,line)){
-            if((line.find("tree.end") != string::npos)&&(counter == maxCounter)){
+            if((line.find("tree.end") != string::npos)&&(isModule == true)){
 
                 string fullName;
 
@@ -172,19 +176,11 @@ void moduleTabel(){
                 modules.push_back(module);
                 trees.pop_back();
                 parameters.clear();
-                --counter;
+                isModule = false;
             }else if((line.find("tree.end") != string::npos)){
-                --counter;
                 trees.pop_back();
-                if (counter < 1)
-                    maxCounter = 0;
-
             }else if(line.find("tree") != string::npos){
-                line = line.substr(line.find(' "') + 1,line.size());
-                ++counter;
-                if (counter > maxCounter)
-                    maxCounter = counter;
-
+                line = line.substr(line.find('"') + 1,line.size());
                 trees.push_back(line.substr(0,line.find('"')));
             }else if(line.find("base ") != string::npos){
                 base = line.substr(line.find(":") + 1,line.length());
@@ -208,6 +204,7 @@ void moduleTabel(){
                         line = line.erase(0,line.find(param)+param.size()+1);
                     }
                 }
+                isModule = true;
             }
         }
 

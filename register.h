@@ -92,7 +92,9 @@ public:
             if((line.find("group.") != string::npos)){                                                                      //! Creating Group object
                     tempGroupLine = line;
                     g = g.searching(line);
-            }else if(line.find("width ") != string::npos){                                                                  //! Setting values of width
+            }else if((line.find("width ") != string::npos)&&(line.find("bitfld") == string::npos)&&(line.find("line") == string::npos)&&
+                     (line.find("hexmask") == string::npos)&&(line.find("eventfld") == string::npos)&&(line.find("setclrfld") == string::npos)&&
+                     (line.find("hide") == string::npos)&&(line.find("group") == string::npos)){                            //! Setting values of width
                 if(line.find("0x") != string::npos){
                     width = Register::hexToDec(line.substr(line.find("0x")+2,line.size()));
                 }else{
@@ -100,7 +102,9 @@ public:
                 }
 
                 first_print = true;
-            }else if((line.find("base ") != string::npos)&&(line.find("bitfld") == string::npos)&&(line.find("line") == string::npos)&&(line.find("hexmask") == string::npos)&&(line.find("eventfld") == string::npos)&&(line.find("setclrfld") == string::npos)){                                                                   //! Changing value of base address
+            }else if((line.find("base ") != string::npos)&&(line.find("bitfld") == string::npos)&&(line.find("line") == string::npos)&&
+                     (line.find("hexmask") == string::npos)&&(line.find("eventfld") == string::npos)&&(line.find("setclrfld") == string::npos)&&
+                     (line.find("hide") == string::npos)&&(line.find("group") == string::npos)){                            //! Changing value of base address
                 baseAddress = line.substr(line.find("0x"), line.size() - line.find("0x"));
             }else if((line.find("%for") != string::npos)){                                                                  //! Entry to FOR condition
                     tempForLine = line;

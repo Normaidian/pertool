@@ -20,7 +20,7 @@ void Register::print(int width, Register r, string coreAddress){
             floor = floor + "_";
         }
     }else{
-        for(int i = 0;i < 25 ; i++){
+        for(int i = 0;i < 26 ; i++){
             str = str + " ";
             floor = floor + "_";
         }
