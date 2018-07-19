@@ -2,16 +2,14 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace std;
-
 class Group{
 public:
 
-    string offset;
-    string range;
-    string access;
+    std::string offset;
+    std::string range;
+    std::string access;
 
-    long hexToDec(string hexAdd){                                                            //! Convert hex number to decimal number
+    long hexToDec(std::string hexAdd){                                                            //! Convert hex number to decimal number
         long decAdd;
         std::stringstream ss;
 
@@ -21,8 +19,8 @@ public:
         return decAdd;
     }
 
-    string decToHex(long decAdd){                                                            //! Convert decimal number to hex number
-        string hexAdd;
+    std::string decToHex(long decAdd){                                                            //! Convert decimal number to hex number
+        std::string hexAdd;
         std::stringstream ss;
 
         ss << std::hex << decAdd;
@@ -32,5 +30,5 @@ public:
         return hexAdd;
     }
 
-    Group searching(string line);                                                             //! Searching group in line from file
+    Group searching(std::string line);                                                             //! Searching group in line from file
 };

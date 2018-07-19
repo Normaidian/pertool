@@ -1,23 +1,20 @@
 #include <string>
 #include <list>
 
-
-using namespace std;
-
 class Module{
 
     public:
         static int actualId;
 
         int id;
-        string name;
-        string baseaddress;
-        string fileaddress;
-        string memoryclass;
-        list <string> prameters;
+        std::string name;
+        std::string baseaddress;
+        std::string fileaddress;
+        std::string memoryclass;
+        std::list <std::string> prameters;
 
     public:
-        Module(string name, string baseaddress, string fileaddress, string memoryclass, list <string> prameters){
+        Module(std::string name, std::string baseaddress, std::string fileaddress, std::string memoryclass, std::list <std::string> prameters){
             this -> id = makeID();
             this -> name = name;
             this -> baseaddress = baseaddress;
@@ -27,32 +24,32 @@ class Module{
         }
 
         int makeID();
-        static void print(list<Module> moduleList){
+        static void print(std::list<Module> moduleList){
 
             int unsigned length = 0;
 
-            for(list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
+            for(std::list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
                 Module m = *i;
                 if (m.name.length() > length){
                     length = m.name.length();
                 }
             }
 
-            string floor = "_____", space = "     ";
+            std::string floor = "_____", space = "     ";
 
             for (int unsigned i = 0; i < length; i++){
                 floor = floor + "_";
                 space = space + " ";
             }
 
-            cout << " _______" << floor << "_____________________________________"  << endl;
-            cout << "| ID   |      Module name" << space.substr(0,length - 12) << "|    Base address     | Memory Class |"  << endl;
-            cout << "|______|" << floor << "|_____________________|______________|"  << endl;
+            std::cout << " _______" << floor << "_____________________________________"  << std::endl;
+            std::cout << "| ID   |      Module name" << space.substr(0,length - 12) << "|    Base address     | Memory Class |"  << std::endl;
+            std::cout << "|______|" << floor << "|_____________________|______________|"  << std::endl;
 
-            for(list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
+            for(std::list<Module>::iterator i = moduleList.begin(); i!=moduleList.end();++i){
                 Module m = *i;
-                cout << "| " << m.id << space.substr(0,5 - to_string(m.id).length()) << "|   " << m.name << space.substr(0, length - m.name.length()) << "  |      " << m.baseaddress << "     |  " << m.memoryclass << space.substr(0,12 - m.memoryclass.length()) <<  "|" << endl;
-                cout << "|______|" << floor << "|_____________________|______________|"  << endl;
+                std::cout << "| " << m.id << space.substr(0,5 - std::to_string(m.id).length()) << "|   " << m.name << space.substr(0, length - m.name.length()) << "  |      " << m.baseaddress << "     |  " << m.memoryclass << space.substr(0,12 - m.memoryclass.length()) <<  "|" << std::endl;
+                std::cout << "|______|" << floor << "|_____________________|______________|"  << std::endl;
             }
         }
 };
