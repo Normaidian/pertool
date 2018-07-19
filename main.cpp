@@ -10,7 +10,6 @@
 
 using namespace std;
 
-fstream file;
 int width, numberOfParams = 0;
 string line, fileAddress, baseAddress, tempForLine, tempGroupLine, coreAddress = "none", hexOrDec = "dec", topdir;
 
@@ -71,18 +70,16 @@ return 0;
 }
 
 void registerTabel(){
+    fstream file;
+
     SetConsoleTextAttribute( hOut, 10 );
     cout << endl << "*.ph file address: ";
     SetConsoleTextAttribute( hOut, 7);
     cin >> fileAddress;
 
-    file.open(fileAddress.c_str(), ios::in);
-
-    if(!file.good()){
+    if((!file.good())||(fileAddress.substr(fileAddress.size() - 3, 3) != ".ph")){
         throw(std::logic_error("---Wrong file address!---"));
     }
-
-    file.close();
 
     topdir = fileAddress.substr(0,10);
 
@@ -137,6 +134,8 @@ void registerTabel(){
 }
 
 void moduleTabel(){
+    fstream file;
+
     Module::actualId = 0;
 
     SetConsoleTextAttribute( hOut, 10 );
@@ -144,11 +143,12 @@ void moduleTabel(){
     SetConsoleTextAttribute( hOut, 7);
     cin >> fileAddress;
 
-    file.open(fileAddress.c_str(), ios::in);
 
-    if((!file.good())&&(fileAddress.substr(fileAddress.length()-2,fileAddress.length()) != ".p")){
+    if((!file.good())||(fileAddress.substr(fileAddress.size() - 2, 2) != ".p")){
         throw(std::logic_error("---Wrong file address!---"));
     }
+
+    file.open(fileAddress.c_str(), ios::in);
 
     topdir = fileAddress.substr(0,10);
 

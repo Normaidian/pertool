@@ -48,7 +48,7 @@ void Register::print(int width, Register r, string coreAddress){
     }else if (coreAddress == "spr"){                                                                                                //! Printed table for Core SPR *.ph file
         if(r.offset.length() < 7){
             string s;
-            for(int i = 0; i < 7-r.offset.length(); i++){
+            for(int unsigned i = 0; i < 7-r.offset.length(); i++){
                 s = s + "0";
             }
             r.offset.insert(2,s);
@@ -82,7 +82,7 @@ void Register::print(int width, Register r, string coreAddress){
     }else if(coreAddress == "cp14/15"){                                                                                                     //! Printed table for Core CP14/15 *.ph file
         if(r.offset.length() < 6){
             string s;
-            for(int i = 0; i < 6-r.offset.length(); i++){
+            for(int unsigned i = 0; i < 6-r.offset.length(); i++){
                 s = s + "0";
             }
             r.offset.insert(2,s);

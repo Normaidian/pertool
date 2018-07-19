@@ -115,7 +115,7 @@ public:
             }else if((line.find("else") != std::string::npos)||(line.find("elif") != std::string::npos)){                               //! Entry to ELSE/ELIF condition
                     insideIfElse = true;
             }else if((line.find("if ") != std::string::npos)&&(line.find("bitfld") == std::string::npos)&&(line.find("line") == std::string::npos)&&
-                     (line.find("hexmask") == std::string::npos)&&(line.find("eventfld") == std::string::npos)&&(line.find("setclrfld") == std::string::npos)){                              //! Entry to IF condition
+                     (line.find("hexmaask") == std::string::npos)&&(line.find("eventfld") == std::string::npos)&&(line.find("setclrfld") == std::string::npos)){                              //! Entry to IF condition
                 insideIf = true;
             }else if(((line.find("line.") != std::string::npos)||(line.find("hide.") != std::string::npos))&&insideIfElse == false){    //! Making register object and print it on screen
                 if(insideFor == true){
