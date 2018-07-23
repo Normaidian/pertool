@@ -9,3 +9,16 @@
 *.o
 *.depend
 *.layout
+*.exe
+*.o
+*.depend
+*.cbp
+*.layout
+*.exe
+*.o
+*.depend
+*.layout
+*.layout
+*.depend
+*.o
+*.exe

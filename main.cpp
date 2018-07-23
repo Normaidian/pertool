@@ -1,24 +1,22 @@
 #include <iostream>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
 #include <string>
-#include <sstream>
 #include <windows.h>
+#include <conio.h>
 #include <list>
 #include "register.h"
+#include "module.h"
 
 using namespace std;
 
-fstream file;
 int width, numberOfParams = 0;
-string fileAddress, baseAddress, tempForLine, tempGroupLine, coreAddress = "none", hexOrDec = "dec";
+string line, fileAddress, baseAddress, tempForLine, tempGroupLine, coreAddress = "none", hexOrDec = "dec", topdir;
 
-void allRegisterTabel();
-string decToHex(string decAdd);
-int hexToDec(string hexAdd);
+void registerTabel();
+void moduleTabel();
+
 HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-Register r;
-Group g;
 
 int main(){
     do{
@@ -28,20 +26,28 @@ int main(){
             width = 0;
             int choice;
 
-            cout << " ____________________________________"<< endl;
-            cout << "|               MENU                 |" << endl;
-            cout << "|____________________________________|" << endl;
-            cout << "|    1 - Get table with registers    |" << endl;
-            cout << "|____________________________________|" << endl;
-            cout << "|    0 - Exit                        |" << endl;
-            cout << "|____________________________________|" << endl;
+            cout << " ___________________________________________________"<< endl;
+            cout << "|                       MENU                        |" << endl;
+            cout << "|___________________________________________________|" << endl;
+            cout << "|    1 - Get table with registers (for *.ph file)   |" << endl;
+            cout << "|___________________________________________________|" << endl;
+            cout << "|    2 - Get table with modules   (for *.p file)    |" << endl;
+            cout << "|___________________________________________________|" << endl;
+            cout << "|    0 - Exit                                       |" << endl;
+            cout << "|___________________________________________________|" << endl;
             cout << "Select operation: ";
             cin >> choice;
 
+            if( !cin ){
+                throw(std::logic_error("---Wrong choice!---"));
+            }
+            else{
                 switch(choice){
-
                     case 1:
-                        allRegisterTabel();
+                        registerTabel();
+                    break;
+                    case 2:
+                        moduleTabel();
                     break;
                     case 0:
                         exit(0);
@@ -49,43 +55,41 @@ int main(){
                     default:
                         throw(std::logic_error("---Wrong choice!---"));
                     break;
+                }
             }
         }catch(std::logic_error &e){
             SetConsoleTextAttribute( hOut, 12 );
             cout << e.what() << endl;
             SetConsoleTextAttribute( hOut, 7 );
+            cin.clear();
+            cin.sync();
             system("pause");
         }
     }while(true);
 return 0;
 }
 
-void allRegisterTabel(){
-    //! Variables declaration
+void registerTabel(){
     fstream file;
-    string line;
-    bool insideIf = false, insideIfElse = false, insideFor = false;
 
-    do{                                                                                                                 //! Checking corrections of file address
-        SetConsoleTextAttribute( hOut, 10 );
-        cout << endl << "File address: ";
-        SetConsoleTextAttribute( hOut, 7);
-        cin >> fileAddress;
+    SetConsoleTextAttribute( hOut, 10 );
+    cout << endl << "*.ph file address: ";
+    SetConsoleTextAttribute( hOut, 7);
+    cin >> fileAddress;
 
-        file.open(fileAddress.c_str(), ios::in);
+    if((!file.good())||(fileAddress.substr(fileAddress.size() - 3, 3) != ".ph")){
+        throw(std::logic_error("---Wrong file address!---"));
+    }
 
-        if(!file.good()){
-            throw(std::logic_error("---Wrong file address!---"));
-        }
+    topdir = fileAddress.substr(0,10);
 
-        if(fileAddress.find("spr.") != string::npos){
-            coreAddress = "spr";
-        }else if((fileAddress.find("cp14.") != string::npos)||(fileAddress.find("cp15.") != string::npos)){
-            coreAddress = "cp14/15";
-        }else{
-            coreAddress = "none";
-        }
-    }while(!file.good());
+    if(fileAddress.find("spr.") != string::npos){
+        coreAddress = "spr";
+    }else if((fileAddress.find("cp14.") != string::npos)||(fileAddress.find("cp15.") != string::npos)){
+        coreAddress = "cp14/15";
+    }else{
+        coreAddress = "none";
+    }
 
     if(coreAddress == "none"){
         SetConsoleTextAttribute( hOut, 10 );
@@ -94,14 +98,14 @@ void allRegisterTabel(){
         cin >> baseAddress;
 
         if (baseAddress != "0" ){
-            for (int i = 2; i < baseAddress.length()-2;i++){                                                                    //! Checking corrections of base address
+            for (int unsigned i = 2; i < baseAddress.length()-2;i++){                                                                    //! Checking corrections of base address
                 if(!isxdigit(baseAddress[i])){
                     throw(std::logic_error("---Wrong base address!---"));
                 }
             }
         }
 
-        SetConsoleTextAttribute( hOut, 10 );                                                                                //! Creating tab with values from *.p file
+        SetConsoleTextAttribute( hOut, 10 );                                                                                    //! Creating tab with values from *.p file
         cout << "Number of values from file *.p: ";
         SetConsoleTextAttribute( hOut, 7 );
         cin >> numberOfParams;
@@ -111,76 +115,141 @@ void allRegisterTabel(){
         numberOfParams = 0;
     }
 
-    string tabParams[numberOfParams];
+    list<string> params;
 
-    for (int i =0; i < numberOfParams; i++){
+    for (int i = 0; i < numberOfParams; i++){
         string value;
         SetConsoleTextAttribute( hOut, 10 );        cout << "Value of " << i+1 << " param: ";
         SetConsoleTextAttribute( hOut, 7 );
         cin >> value;
 
-        tabParams[i] = value;
+        params.push_back(value);
     }
 
     system("cls");
 
-    while(getline(file, line)){
+    Register::searchOperations(fileAddress,baseAddress,params,coreAddress,topdir);
 
-        for (int i = 1; i <= numberOfParams; i++){                                                                      //! Replace the parameter number with its value
-            string param = "%(" + r.toString(i) + ")";
+    system("cls");
+}
 
-            while(line.find(param) != string::npos){
-                line = line.replace(line.find(param),4,tabParams[i-1]);
-            }
-        }
+void moduleTabel(){
+    fstream file;
 
-        if((line.find("group.") != string::npos)){                                                                      //! creating Group object
-                tempGroupLine = line;
-                g = g.searching(line);
-        }else if(line.find("width ") != string::npos){                                                                  //! setting values of width
-            if(line.find("0x") != string::npos){
-                if(r.hexToDec(line.substr(line.find("0x")+2,line.size())) > width){
-                    width = r.hexToDec(line.substr(line.find("0x")+2,line.size()));
-                }
-            }else{
-                if(atoi(line.substr(line.find("width ")+6,line.find(".")-line.find("width ")-1).c_str()) > width){
-                    width = atoi(line.substr(line.find("width ")+6,line.find(".")-line.find("width ")-1).c_str());
-                }
-            }
+    Module::actualId = 0;
 
-            bool *pointer = &r.first_print;
-            *pointer = true;
-        }else if((line.find("base ") != string::npos)&&(line.find(":0x") != string::npos)){
-            baseAddress = line.substr(line.find("base ") + 5, line.size() - line.find("base ") + 5);
-        }else if((line.find("%for") != string::npos)){                                                                  //! entry to for condition
-                tempForLine = line;
-                insideFor = true;
-        }else if((line.find("%endfor") != string::npos)){                                                               //! exit from for condition
-                insideFor = false;
-        }else if(line.find("endif")!= string::npos){                                                                    //! exit to IF condition
-                insideIf = false;
-                insideIfElse = false;
-        }else if((line.find("else") != string::npos)||(line.find("elif")!=string::npos)){                               //! entry to ELSE/ELIF condition
-                insideIfElse = true;
-        }else if((line.find("if ") != string::npos)&&(line.find("bitfld")==string::npos)){                              //! entry to IF condition
-            insideIf = true;
-        }else if(((line.find("line.") != string::npos)||(line.find("hide.")!=string::npos))&&insideIfElse == false){    //! making register object and print it on screen
-            if(insideFor == true){
-                r.forOperations(line, tempForLine, tempGroupLine, width, baseAddress, insideIf, insideFor, coreAddress);
-            }else{
-                r.print(width,r.searching(line,g, baseAddress, insideIf, insideFor), coreAddress);
-            }
-        }
+    SetConsoleTextAttribute( hOut, 10 );
+    cout << endl << "*.p file address: ";
+    SetConsoleTextAttribute( hOut, 7);
+    cin >> fileAddress;
+
+
+    if((!file.good())||(fileAddress.substr(fileAddress.size() - 2, 2) != ".p")){
+        throw(std::logic_error("---Wrong file address!---"));
     }
 
-    SetConsoleTextAttribute( hOut, 14 );
-    cout << endl << "Comments:" << endl;
-    cout << "    1. Registers with 1 stars (*) after name are inside for loop." << endl;
-    cout << "    2. Registers with 2 stars (**) after name are inside if, sif or %if conditions." << endl;
-    cout << "    3. Registers with 3 stars (***) after name are inside for loop and if, sif or %if conditions." << endl << endl;
-    SetConsoleTextAttribute( hOut, 7 );
+    file.open(fileAddress.c_str(), ios::in);
 
-    file.close();
-    system("pause");
-    main();
+    topdir = fileAddress.substr(0,10);
+
+    string name, tmpName, base, memoryClass, address;
+    list <string> parameters;
+    list <Module> modules;
+    list <string> trees;
+    bool isModule = false;
+
+    system("cls");
+
+    do{
+        while(getline(file,line)){
+            if((line.find("tree.end") != string::npos)&&(isModule == true)){
+
+                string fullName;
+
+                for(list<string>::iterator i = trees.begin(); i != trees.end(); ++i){
+                    fullName = fullName + *i + " - ";
+                }
+                fullName.erase(fullName.length()-3,fullName.length());
+
+                Module module(fullName, base, address, memoryClass, parameters);
+
+                modules.push_back(module);
+                trees.pop_back();
+                parameters.clear();
+                isModule = false;
+            }else if((line.find("tree.end") != string::npos)){
+                trees.pop_back();
+            }else if(line.find("tree") != string::npos){
+                line = line.substr(line.find('"') + 1,line.size());
+                trees.push_back(line.substr(0,line.find('"')));
+            }else if(line.find("base ") != string::npos){
+                base = line.substr(line.find(":") + 1,line.length());
+                memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
+            }else if(line.find("%include ") != string::npos){
+
+                if(line.find("${TOPDIR}") != string::npos){
+                    address = line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+                    address.replace(address.find("${TOPDIR}"),9,topdir);
+                }else{
+                    address = fileAddress.substr(0,fileAddress.find_last_of("/\\") + 1) + line.substr(line.find("%include ") + 9, line.find(".ph") - line.find("%include ") - 6);
+                }
+
+                if(line.find(".ph ") != string::npos){
+                    line = line.substr(line.find(".ph") + 4, line.size());
+                    line = line + " ";
+
+                    while(!line.empty()){
+                        string param = line.substr(0,line.find(" "));
+                        parameters.push_back(param);
+                        line = line.erase(0,line.find(param)+param.size()+1);
+                    }
+                }
+                isModule = true;
+            }
+        }
+
+        file.close();
+        system("cls");
+
+        Module::print(modules);
+
+        int choose;
+        SetConsoleTextAttribute( hOut, 10 );
+        cout << endl << "Choose number of module | Select '0' to exit: ";
+        SetConsoleTextAttribute( hOut, 7);
+        cin >> choose;
+
+        if(choose == 0)
+            break;
+
+        system("cls");
+
+        for(list<Module>::iterator i = modules.begin(); i!=modules.end();++i){
+            Module m = *i;
+
+            if(choose == m.id){
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "CHOSEN MODULE: " ;
+                SetConsoleTextAttribute( hOut, 7);
+                cout << m.name << endl;
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "FILE LOCATION: ";
+                SetConsoleTextAttribute( hOut, 7);
+                cout << m.fileaddress << endl;
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "BASE ADDRESS:  ";
+                SetConsoleTextAttribute( hOut, 7);
+                cout << m.baseaddress << endl;
+                SetConsoleTextAttribute( hOut, 10 );
+                cout << "PARAMETERS:    ";
+                SetConsoleTextAttribute( hOut, 7);
+
+                for(list<string>::iterator i = m.prameters.begin(); i != m.prameters.end();++i){
+                    cout << *i << " ";
+                }
+                cout << endl << endl;
+                Register::searchOperations(m.fileaddress, m.baseaddress, m.prameters, "none",topdir);
+            }
+        }
+    }while(true);
 }
