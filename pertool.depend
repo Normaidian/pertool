@@ -1,45 +1,45 @@
 # depslib dependency file v1.0
-1530624335 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
+1532759666 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
 	<iostream>
-	<fstream>
 	<cstdlib>
+	<fstream>
 	<string>
 	<windows.h>
+	<conio.h>
 	<list>
 	"register.h"
 	"module.h"
 
-1530342227 c:\users\pracownik\documents\github\pertool\pertool\register.h
+1532326095 c:\users\pracownik\documents\github\pertool\pertool\register.h
 	<iostream>
 	<algorithm>
 	<string>
+	<list>
 	"group.h"
 
-1530342227 c:\users\pracownik\documents\github\pertool\pertool\group.h
-	<iostream>
-	<sstream>
-	<algorithm>
-
-1530342227 source:c:\users\pracownik\documents\github\pertool\pertool\group.cpp
+1532325506 source:c:\users\pracownik\documents\github\pertool\pertool\group.cpp
 	<iostream>
 	<fstream>
 	<cstdlib>
 	<string>
 	"group.h"
 
-1530342227 source:c:\users\pracownik\documents\github\pertool\pertool\register.cpp
+1532326095 source:c:\users\pracownik\documents\github\pertool\pertool\register.cpp
 	<iostream>
 	<fstream>
 	<cstdlib>
+	<windows.h>
 	<string>
 	<sstream>
+	<iostream>
 	"register.h"
 
-1530616963 c:\users\pracownik\documents\github\pertool\pertool\module.h
+1532759255 c:\users\pracownik\documents\github\pertool\pertool\module.h
 	<string>
 	<list>
 
-1530539962 source:c:\users\pracownik\documents\github\pertool\pertool\module.cpp
+1532326095 source:c:\users\pracownik\documents\github\pertool\pertool\module.cpp
+	"iostream"
 	"module.h"
 
 1530721994 source:e:\c++\pertool\group.cpp
@@ -49,20 +49,10 @@
 	<string>
 	"group.h"
 
-1530721994 e:\c++\pertool\group.h
+1532326095 c:\users\pracownik\documents\github\pertool\pertool\group.h
 	<iostream>
 	<sstream>
 	<algorithm>
-
-1530985169 source:e:\c++\pertool\main.cpp
-	<iostream>
-	<fstream>
-	<cstdlib>
-	<string>
-	<windows.h>
-	<list>
-	"register.h"
-	"module.h"
 
 1530721994 e:\c++\pertool\register.h
 	<iostream>
@@ -70,15 +60,35 @@
 	<string>
 	"group.h"
 
-1530984629 e:\c++\pertool\module.h
+1529477864 source:c:\users\pracownik\documents\github\pertool\tool\group.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
 	<string>
+	"group.h"
+
+1529480083 c:\users\pracownik\documents\github\pertool\tool\group.h
+	<iostream>
+	<sstream>
+	<algorithm>
+
+1529480499 source:c:\users\pracownik\documents\github\pertool\tool\main.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+	<sstream>
+	<windows.h>
 	<list>
+	"register.h"
 
-1530983630 source:e:\c++\pertool\module.cpp
-	"iostream"
-	"module.h"
+1529480075 c:\users\pracownik\documents\github\pertool\tool\register.h
+	<iostream>
+	<algorithm>
+	<string>
+	"group.h"
 
-1530976237 source:e:\c++\pertool\register.cpp
+1529480555 source:c:\users\pracownik\documents\github\pertool\tool\register.cpp
 	<iostream>
 	<fstream>
 	<cstdlib>

@@ -114,6 +114,3 @@ void Register::print(int width, Register r, string coreAddress){
         cout << "|" << floor << "|________________________|_____________________|_______|_______|_______|_______|_______________|" << endl;
     }
 }
-
-
-

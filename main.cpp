@@ -184,6 +184,7 @@ void moduleTabel(){
                 trees.push_back(line.substr(0,line.find('"')));
             }else if(line.find("base ") != string::npos){
                 base = line.substr(line.find(":") + 1,line.length());
+                base.erase(std::remove(base.begin(), base.end(), ' '), base.end());
                 memoryClass = line.substr(line.find("base ") + 5,line.find(":") - line.find("base ")-5);
             }else if(line.find("%include ") != string::npos){
 
