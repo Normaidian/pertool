@@ -152,7 +152,7 @@ void moduleTabel(){
 
     topdir = fileAddress.substr(0,10);
 
-    string name, tmpName, base, memoryClass, address;
+    string name, tmpName, base = "0x00", memoryClass, address;
     list <string> parameters;
     list <Module> modules;
     list <string> trees;
