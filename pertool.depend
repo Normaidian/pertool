@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1532759666 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
+1533711062 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
 	<iostream>
 	<cstdlib>
 	<fstream>
@@ -17,14 +17,14 @@
 	<list>
 	"group.h"
 
-1532325506 source:c:\users\pracownik\documents\github\pertool\pertool\group.cpp
+1532759953 source:c:\users\pracownik\documents\github\pertool\pertool\group.cpp
 	<iostream>
 	<fstream>
 	<cstdlib>
 	<string>
 	"group.h"
 
-1532326095 source:c:\users\pracownik\documents\github\pertool\pertool\register.cpp
+1532759953 source:c:\users\pracownik\documents\github\pertool\pertool\register.cpp
 	<iostream>
 	<fstream>
 	<cstdlib>
@@ -34,7 +34,7 @@
 	<iostream>
 	"register.h"
 
-1532759255 c:\users\pracownik\documents\github\pertool\pertool\module.h
+1532759953 c:\users\pracownik\documents\github\pertool\pertool\module.h
 	<string>
 	<list>
 
