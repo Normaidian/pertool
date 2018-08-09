@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1533805498 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
+1533822164 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
 	<iostream>
 	<cstdlib>
 	<fstream>

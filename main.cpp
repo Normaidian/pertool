@@ -292,11 +292,10 @@ void mCreator(){
         }else if(line.find("@Props:") != string::npos){
             mcuProps = line.substr(line.find(": ") + 2,line.size());
         }else if(line.find("@Author:") != string::npos){
-           // SetConsoleTextAttribute( hOut, 10 );
-           // cout << "Author: ";
-           // SetConsoleTextAttribute( hOut, 7);
-           // cin >> mcuAuthor;
-           mcuAuthor = "adas";
+            SetConsoleTextAttribute( hOut, 10 );
+            cout << "Author: ";
+            SetConsoleTextAttribute( hOut, 7);
+            cin >> mcuAuthor;
         }else if(line.find("@Manufacturer:") != string::npos){
             mcuManufacturer = line.substr(line.find(": ") + 2,line.size());
         }else if(line.find("@Core:") != string::npos){
@@ -339,38 +338,61 @@ void mCreator(){
         Module m = *i;
         string name = m.name;
 
+        actPopup = name.substr(0,name.find_last_of(","));
 
         if((name.find(",") != string::npos)){
-            actPopup = name.substr(0,name.find_last_of(","));
+            list<string> popList;
 
-            if(prevPopup.find(actPopup) != string::npos){
-                if(prevPopup != actPopup){
-                    prevPopup = actPopup;
+
+            while(name.find(prevPopup) == string::npos){
+                --level;
+                space.erase(space.size()-4,4);
+                if(prevPopup.find(",") != string::npos){
+                    prevPopup.erase(prevPopup.find_last_of(","),prevPopup.size() - prevPopup.find_last_of(","));
+                }else{
+                    prevPopup = "";
                 }
-            }else{
-                if(level > 0){
-                    --level;
-                    space.erase(space.size() - 4,3);
-                    file << space << ")" << endl;
+                file << space << ")" << endl;
+            }
+
+            do{
+                popList.push_back(name.substr(0,name.find(",")));
+                name.erase(0,name.find(",")+1);
+            }while(name.find(",") != string::npos);
+
+            for(std::list<string>::iterator i = popList.begin(); i!=popList.end();++i){
+                if(prevPopup.find(*i) == string::npos){
+                    file << space << "popup \"" << *i << "\"" << endl << space << "(" << endl;
+                    ++level;
+                    space += "    ";
                 }
-                file << space << "popup \"" << actPopup.substr(0,actPopup.find(",")) << "\"" << endl << space << "(" << endl;
-                ++level;
-                space+="   ";
+
+
             }
 
             if(prevPopup != actPopup){
                 prevPopup = actPopup;
             }
-            name.erase(0,name.find_last_of(",") + 1);
         }
 
         file << space << "menuitem \"" << name << "\"                \"per , \"\"" << m.name << "\"\"\"" << endl;
     }
 
+
+    file << "        )" << endl;
     file << "    )" << endl;
     file << ")" << endl;
 
     file.close();
 
-    exit(0);
+    SetConsoleTextAttribute( hOut, 10 );
+    cout << endl << "Created " << mFileAddress.substr(mFileAddress.find("men"),mFileAddress.size()) << " file!" << endl;
+    cout <<  "Check this location: ";
+    SetConsoleTextAttribute( hOut, 7);
+    cout << mFileAddress << endl;
+    SetConsoleTextAttribute( hOut, 12 );
+    cout << "!!!  REMEBER TO CHECK FILE CORECTNESS AND ADD REQUIRED SIFS  !!!" << endl;
+    SetConsoleTextAttribute( hOut, 7);
+
+    system("pause");
 }
