@@ -343,6 +343,21 @@ void mCreator(){
         if((name.find(",") != string::npos)){
             actPopup = name.substr(0,name.find_last_of(","));
 
+            if(prevPopup.find(actPopup) != string::npos){
+                if(prevPopup != actPopup){
+                    prevPopup = actPopup;
+                }
+            }else{
+                if(level > 0){
+                    --level;
+                    space.erase(space.size() - 4,3);
+                    file << space << ")" << endl;
+                }
+                file << space << "popup \"" << actPopup.substr(0,actPopup.find(",")) << "\"" << endl << space << "(" << endl;
+                ++level;
+                space+="   ";
+            }
+
             if(prevPopup != actPopup){
                 prevPopup = actPopup;
             }
