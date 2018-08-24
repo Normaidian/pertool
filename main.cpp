@@ -205,7 +205,6 @@ void registerTabel(){
 void moduleTabel(){
     fstream file;
     list <Module> modules;
-    Module::actualId = 0;
 
     SetConsoleTextAttribute( hOut, 10 );
     cout << endl << "*.p file address: ";
@@ -222,6 +221,7 @@ void moduleTabel(){
     system("cls");
 
     do{
+        Module::actualId = 0;
         modules = moduleList(fileAddress, " - ");
         system("cls");
 
@@ -270,7 +270,7 @@ void moduleTabel(){
 
 void mCreator(){
     fstream file;
-    string mFileAddress, space = "        ", prevPopup, actPopup, mcuName, mcuProps, mcuAuthor, mcuManufacturer, mcuCore;
+    string mFileAddress, space = "        ", prevPopup, actPopup, mcuName, mcuProps, mcuAuthor, mcuManufacturer, mcuCore, commonDisk;
     list <Module> modules;
     unsigned int level = 0;
 
@@ -381,7 +381,12 @@ void mCreator(){
 
     file.close();
 
-    string order = "Y:/USERS/ASK/_PER_Tools/parsmen/exec_parsmen.exe " + tempMFileAdderss + " >> " + mFileAddress;                  //! using ParsMen
+    SetConsoleTextAttribute( hOut, 10 );
+    cout << endl << "Name of common disk (e.g. \"Z\"): ";
+    SetConsoleTextAttribute( hOut, 7);
+    cin >> commonDisk;
+
+    string order = commonDisk + ":/USERS/ASK/_PER_Tools/parsmen/exec_parsmen.exe " + tempMFileAdderss + " >> " + mFileAddress;                  //! using ParsMen
     system(order.c_str());
     order = "del " + tempMFileAdderss;
     system(order.c_str());
