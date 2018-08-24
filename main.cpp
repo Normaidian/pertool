@@ -382,11 +382,14 @@ void mCreator(){
     file.close();
 
     SetConsoleTextAttribute( hOut, 10 );
-    cout << endl << "Name of common disk (e.g. \"Z\"): ";
+    cout << endl << "Name of common disk (e.g. \"Z\",\"Y\"): ";
     SetConsoleTextAttribute( hOut, 7);
     cin >> commonDisk;
 
-    string order = commonDisk + ":/USERS/ASK/_PER_Tools/parsmen/exec_parsmen.exe " + tempMFileAdderss + " >> " + mFileAddress;                  //! using ParsMen
+
+    string order = "del " + mFileAddress;
+    system(order.c_str());
+    order = commonDisk + ":/USERS/ASK/_PER_Tools/parsmen/exec_parsmen.exe " + tempMFileAdderss + " >> " + mFileAddress;                  //! using ParsMen
     system(order.c_str());
     order = "del " + tempMFileAdderss;
     system(order.c_str());
