@@ -273,7 +273,6 @@ void mCreator(){
     string mFileAddress, space = "        ", prevPopup, actPopup, mcuName, mcuProps, mcuAuthor, mcuManufacturer, mcuCore;
     list <Module> modules;
     unsigned int level = 0;
-    bool first = false;
 
     SetConsoleTextAttribute( hOut, 10 );
     cout << endl << "*.p file address: ";
@@ -286,7 +285,7 @@ void mCreator(){
 
     file.open(fileAddress, ios::in);
 
-    while(getline(file,line)){
+    while(getline(file,line)){                                                                                                      //! taking data to m file header
         if (line.find("@Title:") != string::npos){
             mcuName = line.substr(line.find(": ") + 2,line.find(" On-Chip Peripherals") - line.find(": ") - 2);
         }else if(line.find("@Props:") != string::npos){
@@ -312,9 +311,10 @@ void mCreator(){
     SYSTEMTIME st;
     GetLocalTime(&st);
 
-    file.open(mFileAddress, ios::out);
+    string tempMFileAdderss = mFileAddress.substr(0,mFileAddress.find_last_of("\\") + 1) + "mtemp.m";
+    file.open(tempMFileAdderss, ios::out);
 
-    file << "; --------------------------------------------------------------------------------" << endl;
+    file << "; --------------------------------------------------------------------------------" << endl;                           //! Making m file header
     file << "; @Title: " << mcuName << " Specific Menu" << endl;
     file << "; @Props: " << mcuProps << endl;
     file << "; @Author: " << mcuAuthor << endl;
@@ -334,7 +334,7 @@ void mCreator(){
 
     modules = moduleList(fileAddress, ",");
 
-    for(std::list<Module>::iterator i = modules.begin(); i!=modules.end();++i){
+    for(std::list<Module>::iterator i = modules.begin(); i!=modules.end();++i){                                                      //! Making content of m file
         Module m = *i;
         string name = m.name;
 
@@ -342,7 +342,6 @@ void mCreator(){
 
         if((name.find(",") != string::npos)){
             list<string> popList;
-
 
             while(name.find(prevPopup) == string::npos){
                 --level;
@@ -366,8 +365,6 @@ void mCreator(){
                     ++level;
                     space += "    ";
                 }
-
-
             }
 
             if(prevPopup != actPopup){
@@ -378,20 +375,25 @@ void mCreator(){
         file << space << "menuitem \"" << name << "\"                \"per , \"\"" << m.name << "\"\"\"" << endl;
     }
 
-
     file << "        )" << endl;
     file << "    )" << endl;
     file << ")" << endl;
 
     file.close();
 
+    string order = "Y:/USERS/ASK/_PER_Tools/parsmen/exec_parsmen.exe " + tempMFileAdderss + " >> " + mFileAddress;                  //! using ParsMen
+    system(order.c_str());
+    order = "del " + tempMFileAdderss;
+    system(order.c_str());
+
     SetConsoleTextAttribute( hOut, 10 );
     cout << endl << "Created " << mFileAddress.substr(mFileAddress.find("men"),mFileAddress.size()) << " file!" << endl;
     cout <<  "Check this location: ";
     SetConsoleTextAttribute( hOut, 7);
-    cout << mFileAddress << endl;
+    cout << mFileAddress << endl << endl;
     SetConsoleTextAttribute( hOut, 12 );
     cout << "!!!  REMEBER TO CHECK FILE CORECTNESS AND ADD REQUIRED SIFS  !!!" << endl;
+    cout << "!!!              REMEMBER TO ADD CORE INCLUDE                !!!" << endl;
     SetConsoleTextAttribute( hOut, 7);
 
     system("pause");
