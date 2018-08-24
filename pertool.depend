@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1535101517 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
+1535107628 source:c:\users\pracownik\documents\github\pertool\pertool\main.cpp
 	<iostream>
 	<cstdlib>
 	<fstream>
@@ -10,7 +10,7 @@
 	"register.h"
 	"module.h"
 
-1532326095 c:\users\pracownik\documents\github\pertool\pertool\register.h
+1535107174 c:\users\pracownik\documents\github\pertool\pertool\register.h
 	<iostream>
 	<algorithm>
 	<string>
